@@ -5,6 +5,9 @@ import java.util.List;
 
 import com.gpupu.bjcpapi.model.Category;
 import com.gpupu.bjcpapi.model.Subcategory;
+import com.jayway.jsonpath.Filter;
+import static com.jayway.jsonpath.Criteria.where;
+import static com.jayway.jsonpath.Filter.filter;
 import com.jayway.jsonpath.JsonPath;
 
 public class JsonFile {
@@ -33,13 +36,17 @@ public class JsonFile {
 		return subcategories;
 	}
 
-	public List retrieveSubategoriesByTag(String tag) throws Exception {
+	public List retrieveSubcategoriesByTag(String tag) throws Exception {
 		File file = new File(this.getClass().getResource("/json/" + FILE_NAME).getPath());
 
+		Filter tagFilter = filter(
+				where("tags").contains(tag)
+		);
+		
 		JsonPath path = JsonPath
-				.compile("$.styleguide.class[0].category[*].subcategory[?(@.tags.indexOf(" + tag + ") != -1)]");
+				.compile("$.styleguide.class[0].category[*].subcategory[?]", tagFilter);
 		List<Subcategory> subcategories = path.read(file);
-
+		
 		return subcategories;
 
 	}

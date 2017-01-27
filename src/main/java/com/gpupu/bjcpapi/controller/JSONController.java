@@ -138,7 +138,7 @@ public class JSONController {
 
 	private List retrieveSubcategoriesByTag(String tagText) throws Exception {
 
-		List subcategories = connector.retrieveSubategoriesByTag(tagText);
+		List subcategories = connector.retrieveSubcategoriesByTag(tagText);
 		return subcategories;
 
 	}
