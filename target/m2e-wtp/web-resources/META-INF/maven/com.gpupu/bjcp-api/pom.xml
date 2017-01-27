@@ -92,7 +92,7 @@
 
 
 	<build>
-		<finalName>helloSpring</finalName>
+		<finalName>bjcp-api</finalName>
 
 		<plugins>
 
