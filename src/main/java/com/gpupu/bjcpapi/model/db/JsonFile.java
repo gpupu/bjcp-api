@@ -1,13 +1,12 @@
 package com.gpupu.bjcpapi.model.db;
 
+import static com.jayway.jsonpath.Criteria.where;
+import static com.jayway.jsonpath.Filter.filter;
+
 import java.io.File;
 import java.util.List;
 
-import com.gpupu.bjcpapi.model.Category;
-import com.gpupu.bjcpapi.model.Subcategory;
 import com.jayway.jsonpath.Filter;
-import static com.jayway.jsonpath.Criteria.where;
-import static com.jayway.jsonpath.Filter.filter;
 import com.jayway.jsonpath.JsonPath;
 
 public class JsonFile {
@@ -16,38 +15,43 @@ public class JsonFile {
 	// private final static String FILE_PATH =
 	// this.getClass().getResource("/json/styleguide-2015.json").getPath();
 
-	public List<Category> retrieveCategory(String categoryId) throws Exception {
-
-		File file = new File(this.getClass().getResource("/json/" + FILE_NAME).getPath());
-
-		JsonPath path = JsonPath.compile("$.styleguide.class[0].category[?(@.id==" + categoryId + ")]");
-		List<Category> category = path.read(file);
-
-		return category;
+	private List compileAndRead(String jsonPath) throws Exception {
+		return compileAndRead(jsonPath, null);
 	}
 
-	public List<Subcategory> retrieveSubcategory(String subcatId) throws Exception {
+	private List compileAndRead(String jsonPath, Filter filter) throws Exception {
 		File file = new File(this.getClass().getResource("/json/" + FILE_NAME).getPath());
 
-		JsonPath path = JsonPath
-				.compile("$.styleguide.class[0].category[*].subcategory[?(@.id == '" + subcatId + "')]");
-		List<Subcategory> subcategories = path.read(file);
+		JsonPath path;
+		if (filter != null) {
+			path = JsonPath.compile(jsonPath, filter);
+		} else {
+			path = JsonPath.compile(jsonPath);
+		}
 
-		return subcategories;
+		return path.read(file);
+
+	}
+
+	public List retrieveCategory(String categoryId) throws Exception {
+		String jsonPath = "$.styleguide.class[0].category[?(@.id==" + categoryId + ")]";
+
+		return compileAndRead(jsonPath);
+	}
+
+	public List retrieveSubcategory(String subcatId) throws Exception {
+		String jsonPath = "$.styleguide.class[0].category[*].subcategory[?(@.id == '" + subcatId + "')]";
+
+		return compileAndRead(jsonPath);
 	}
 
 	public List retrieveSubcategoriesByTag(String tag) throws Exception {
-		File file = new File(this.getClass().getResource("/json/" + FILE_NAME).getPath());
 
-		Filter tagFilter = filter(
-				where("tags").contains(tag)
-		);
-		
-		JsonPath path = JsonPath
-				.compile("$.styleguide.class[0].category[*].subcategory[?]", tagFilter);
-		List<Subcategory> subcategories = path.read(file);
-		
-		return subcategories;
+		Filter tagFilter = filter(where("tags").contains(tag));
+
+		String jsonPath = "$.styleguide.class[0].category[*].subcategory[?]";
+
+		return compileAndRead(jsonPath, tagFilter);
 
 	}
 

@@ -31,5 +31,9 @@
 <h3>Search for a Subcategory</h3>
 
 <p> Try for using <a href="${pageContext.request.contextPath}/2015?subcategory=3C">"${pageContext.request.contextPath}"/2015?subcategory=3C</a></p>
+
+<h3>List of Subcategories by Tag</h3>
+
+<p> Try for using <a href="${pageContext.request.contextPath}/2015?tag=malty">${pageContext.request.contextPath}/2015?tag=malty</a></p>
 </body>
 </html>
